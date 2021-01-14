@@ -36,6 +36,7 @@ app.get("/", (req, res) => {
 
 app.get("/get-bpmn-process", (req, result) => {
   const task_type = req.query.task_type;
+  const backwards_check = req.query.is_backwards;
   let query = "";
   if (req.query.is_backwards == "true") {
     query = `select * from "task_manager"."get_process_vizualization_backwards"('${task_type}')`;
@@ -46,7 +47,7 @@ app.get("/get-bpmn-process", (req, result) => {
   let result_array = [];
   //query = `select * from "task_manager"."get_reverse_bpmn_process"('${task_type}')`;
 
-  client.query(query, (err, res) => {
+  client.query(query, async (err, res) => {
     if (err) {
       console.error("We got an error!! : ", err);
       return res.end("{}");
@@ -55,7 +56,7 @@ app.get("/get-bpmn-process", (req, result) => {
       result_array.push(row);
     }
     if (result_array.length > 0) {
-      const resultJson = getProcessJSON(result_array);
+      const resultJson = await getProcessJSON(result_array, backwards_check);
       result.end(resultJson);
       return;
       let emptyOperators = {

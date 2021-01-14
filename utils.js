@@ -1,4 +1,4 @@
-const getProcessJSON = (result_array) => {
+const getProcessJSON = (result_array, backwards_check) => {
     let emptyOperators = {
         operators: {
           operator0: {
@@ -64,26 +64,34 @@ const getProcessJSON = (result_array) => {
       }
 
       for(var linksTraverseIndex=0; linksTraverseIndex<result_array.length; linksTraverseIndex++){
-        if (
-            result_array[linksTraverseIndex].linked_process_id == 3 &&
+        if(backwards_check == "true"){
+          if (
+            result_array[linksTraverseIndex].linked_process_id == 159 &&
             result_array[linksTraverseIndex].parent_process_id == 312
           ) {
             prventInfinteLoop++;
             if (prventInfinteLoop > 1) break;
           }
+
+        } else {
+          if (
+              result_array[linksTraverseIndex].linked_process_id == 3 &&
+              result_array[linksTraverseIndex].parent_process_id == 312
+            ) {
+              prventInfinteLoop++;
+              if (prventInfinteLoop > 1) break;
+            }
+        }
           //claculate backwards routes 
           var operatorKeys = Object.keys(emptyOperators.operators);
-          console.log('operator keys length', operatorKeys.length);
           for(var operatorKey=0; operatorKey<operatorKeys.length; operatorKey++){
                 if(result_array[linksTraverseIndex].parent_process_name === emptyOperators.operators[operatorKeys[operatorKey]].properties.title){
-                    console.log("For " + result_array[linksTraverseIndex].parent_process_name + "matched operator is" + operatorKeys[operatorKey]);
                     fromOperator = operatorKeys[operatorKey];
 
                     //find toOperator
                     for(var findToIndex=0; findToIndex<operatorKeys.length; findToIndex++){
                         if(result_array[linksTraverseIndex].linked_process_type == emptyOperators.operators[operatorKeys[findToIndex]].properties.title){
                             toOperator = operatorKeys[findToIndex];
-                            console.log("and to operator is ", toOperator);
                             var inputKeys = Object.keys(emptyOperators.operators[operatorKeys[findToIndex]].properties.inputs);
                             var newKeyName = "input_" + eval(inputKeys.length + 1);
                             emptyOperators.operators[operatorKeys[findToIndex]].properties.inputs[newKeyName] = {
@@ -116,7 +124,7 @@ const getProcessJSON = (result_array) => {
             */
         }
 
-        console.log("empty operatos are ", JSON.stringify(emptyOperators));
+        //console.log("empty operatos are ", JSON.stringify(emptyOperators));
 
       return JSON.stringify(emptyOperators);
 
