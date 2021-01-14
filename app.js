@@ -3,6 +3,7 @@ const { Client } = require("pg");
 const path = require("path");
 
 const config = require("./config");
+const { getProcessJSON } = require("./utils");
 
 const app = express();
 
@@ -35,6 +36,7 @@ app.get("/", (req, res) => {
 
 app.get("/get-bpmn-process", (req, result) => {
   const task_type = req.query.task_type;
+  const backwards_check = req.query.is_backwards;
   let query = "";
   if (req.query.is_backwards == "true") {
     query = `select * from "task_manager"."get_process_vizualization_backwards"('${task_type}')`;
@@ -45,7 +47,7 @@ app.get("/get-bpmn-process", (req, result) => {
   let result_array = [];
   //query = `select * from "task_manager"."get_reverse_bpmn_process"('${task_type}')`;
 
-  client.query(query, (err, res) => {
+  client.query(query, async (err, res) => {
     if (err) {
       console.error("We got an error!! : ", err);
       return res.end("{}");
@@ -53,8 +55,10 @@ app.get("/get-bpmn-process", (req, result) => {
     for (let row of res.rows) {
       result_array.push(row);
     }
-    console.log("result array is..", result_array);
     if (result_array.length > 0) {
+      const resultJson = await getProcessJSON(result_array, backwards_check);
+      result.end(resultJson);
+      return;
       let emptyOperators = {
         operators: {
           operator0: {
@@ -107,7 +111,7 @@ app.get("/get-bpmn-process", (req, result) => {
           if (prventInfinteLoop > 1) break;
         }
 
-        
+
         var operator_keys = Object.keys(emptyOperators.operators);
         for (var i = 0, length = operator_keys.length; i < length; i++) {
           if (
@@ -116,21 +120,19 @@ app.get("/get-bpmn-process", (req, result) => {
           ) {
             var responsePresent = false;
             var inputKeys = Object.keys(emptyOperators.operators[operator_keys[i]].properties.inputs);
+            /*
             for(var ipKey=1; ipKey<=inputKeys.length; ipKey++){
               var keyName = "input_" + ipKey;
               if(emptyOperators.operators[operator_keys[i]].properties.inputs[keyName].label ==
                 result_array[index].possible_response){
                   responsePresent = true;
                 }
-            }
+            }*/
             if(responsePresent == false) {
               var newKeyName = "input_" + eval(inputKeys.length + 1);
-              console.log("newkeyname is", newKeyName);
               emptyOperators.operators[operator_keys[i]].properties.inputs[newKeyName] = {
                 "label": result_array[index].possible_response
               };
-              console.log("insideToOperator operator is", operator_keys[i]);
-              console.log("parent operator is ", result_array[index].parent_process_name)
               let insideToOperator = operator_keys[i];
               let insideFromOperator = '';
               var operator_keys_v2 = Object.keys(emptyOperators.operators);
@@ -140,7 +142,6 @@ app.get("/get-bpmn-process", (req, result) => {
                   result_array[index].parent_process_name
                 ) {
                   insideFromOperator = operator_keys_v2[j];
-                  console.log("insideFromOperator operator is", operator_keys_v2[i]);
 
                   emptyOperators.links[linksIndex] = {
                     fromOperator: insideFromOperator,
@@ -271,6 +272,8 @@ app.get("/get-bpmn-process", (req, result) => {
           delete emptyOperators.links[link_keys[i]];
         }
       }
+
+      console.log("it should not come here");
 
       result.end(JSON.stringify(emptyOperators));
 
