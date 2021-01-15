@@ -89,9 +89,33 @@ const getProcessJSON = (result_array, backwards_check) => {
                     fromOperator = operatorKeys[operatorKey];
 
                     //find toOperator
-                    for(var findToIndex=0; findToIndex<operatorKeys.length; findToIndex++){
+                    innerLinkLoop: for(var findToIndex=0; findToIndex<operatorKeys.length; findToIndex++){
                         if(result_array[linksTraverseIndex].linked_process_type == emptyOperators.operators[operatorKeys[findToIndex]].properties.title){
                             toOperator = operatorKeys[findToIndex];
+
+                            //check if that particular link already exists
+                            var linkKeys = Object.keys(emptyOperators.links);
+                            for (var linkKey = 0; linkKey< linkKeys.length; linkKey++) {
+                              if (
+                                  emptyOperators.links[linkKey]["toOperator"] == toOperator &&
+                                  emptyOperators.links[linkKey]["fromOperator"] == fromOperator
+                                )
+                               {
+                                  var tempInputKeys = Object.keys(emptyOperators.operators[operatorKeys[findToIndex]].properties.inputs);
+                                  for(var ipKey=1; ipKey<=tempInputKeys.length; ipKey++){
+                                    var keyName = "input_" + ipKey;
+                                    
+                                    if(result_array[linksTraverseIndex].possible_response == emptyOperators.operators[toOperator].properties.inputs[keyName].label){
+                                    
+                                      //console.log("Matched from " + fromOperator + " to " + toOperator + " with input " + newKeyName);
+                                      continue innerLinkLoop;
+
+                                    }
+                                  }
+                               }
+                            }
+
+
                             var inputKeys = Object.keys(emptyOperators.operators[operatorKeys[findToIndex]].properties.inputs);
                             var newKeyName = "input_" + eval(inputKeys.length + 1);
                             emptyOperators.operators[operatorKeys[findToIndex]].properties.inputs[newKeyName] = {
@@ -124,7 +148,7 @@ const getProcessJSON = (result_array, backwards_check) => {
             */
         }
 
-        //console.log("empty operatos are ", JSON.stringify(emptyOperators));
+        console.log("empty operatos are ", JSON.stringify(emptyOperators));
 
       return JSON.stringify(emptyOperators);
 
