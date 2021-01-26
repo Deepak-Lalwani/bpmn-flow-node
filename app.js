@@ -34,6 +34,10 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname + "/public/demo.html"));
 });
 
+app.get("/error", (req, res) => {
+  res.sendFile(path.join(__dirname + "/public/errorPage.html"));
+});
+
 app.get("/get-bpmn-process", (req, result) => {
   const task_type = req.query.task_type;
   const backwards_check = req.query.is_backwards;

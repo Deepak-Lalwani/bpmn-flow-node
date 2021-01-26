@@ -318,6 +318,7 @@
           success: function (result) {
             var newData = result.replace(/_/g, "_<wbr/>");
             if (newData == "{}") {
+              window.location.href = "/error";
               $(".flowchart-operator").width(300);
               newData = defaultFlowchartData;
               $flowchart.flowchart("redrawLinksLayer");

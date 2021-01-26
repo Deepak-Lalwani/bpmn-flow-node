@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Bad Request</title>
+
+	<link href="https://fonts.googleapis.com/css?family=Raleway:400,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Passion+One:900" rel="stylesheet">
+	<link type="text/css" rel="stylesheet" href="errorPage.css" />
+</head>
+
+<body>
+
+	<div id="notfound">
+		<div class="notfound">
+			<div class="notfound-404">
+				<h1>:(</h1>
+			</div>
+			<h2>OOPS!! Bad Request</h2>
+            <p>Looks like we couldn't find any linked process for the entered task type. Please provide a valid task type.<br/><br/><br/>Here are some examples :</p>
+            <br/>
+            <p><b>Linked process for forward direction</b></p>
+            <a href="/?task_type=import_csv_file">Import CSV file</a>
+            <a href="/?task_type=master_reconciliation">Master Reconciliation</a>
+            <br/><br/>
+            <p><b>Linked process for backwards direction</b></p>
+            <a href="/?task_type=import_csv_file&is_backwards=true">Import CSV file</a>
+            <a href="/?task_type=master_reconciliation&is_backwards=true">Master Reconciliation</a>
+		</div>
+	</div>
+
+</body>
+
+</html>
