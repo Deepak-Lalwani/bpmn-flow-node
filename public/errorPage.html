@@ -23,13 +23,15 @@
 			<h2>OOPS!! Bad Request</h2>
             <p>Looks like we couldn't find any linked process for the entered task type. Please provide a valid task type.<br/><br/><br/>Here are some examples :</p>
             <br/>
-            <p><b>Linked process for forward direction</b></p>
-            <a href="/?task_type=import_csv_file">Import CSV file</a>
-            <a href="/?task_type=master_reconciliation">Master Reconciliation</a>
+			<p>Linked process for <b><span class="processName">Import CSV File</span></b></p>
+			<a href="/?task_type=import_csv_file">Complete Flow</a>
+            <a href="/?task_type=import_csv_file&is_forward=true">Forward Processes</a>
+            <a href="/?task_type=import_csv_file&is_backwards=true">Backwards Processes</a>
             <br/><br/>
-            <p><b>Linked process for backwards direction</b></p>
-            <a href="/?task_type=import_csv_file&is_backwards=true">Import CSV file</a>
-            <a href="/?task_type=master_reconciliation&is_backwards=true">Master Reconciliation</a>
+			<p>Linked process for <b><span class="processName">Master Reconciliation</span></b></p>
+			<a href="/?task_type=master_reconciliation">Complete Flow</a>
+            <a href="/?task_type=master_reconciliation&is_forward=true">Forward Processes</a>
+			<a href="/?task_type=master_reconciliation&is_backwards=true">Backwards Processes</a>
 		</div>
 	</div>
 

@@ -308,13 +308,16 @@
         const urlParams = new URLSearchParams(window.location.search);
         const task_type = urlParams.get("task_type");
         const is_backwards = urlParams.get("is_backwards");
+        const is_forward = urlParams.get("is_forward");
 
         $.ajax({
           url:
             "/get-bpmn-process?task_type=" +
             task_type +
             "&is_backwards=" +
-            is_backwards,
+            is_backwards +
+            "&is_forward=" +
+            is_forward,
           success: function (result) {
             var newData = result.replace(/_/g, "_<wbr/>");
             if (newData == "{}") {
